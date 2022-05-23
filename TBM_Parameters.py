@@ -21,6 +21,22 @@ from PIL import Image
 st.set_page_config(page_title="TBM_Parameters", page_icon="muscleman.jpg", layout="wide", initial_sidebar_state="auto")
 st.title('TBM Parameters')
 TBM_parameter_dataset = pd.read_csv('TBMParameter_Analyticaldataset.csv',encoding="cp1252") 
+
+
+def RFPP_only(x):
+        if (x['Non_Uniformity_RFPP'] ==1): return 'Rejected Tyre'
+        else: return 'Not Rejected Tyre'        
+TBM_parameter_dataset['Rejection_RFPP_Only'] =TBM_parameter_dataset.apply(RFPP_only, axis=1)
+
+def Imbalance_only(x):
+        if (x['Non_Uniformity_Imbalance'] ==1): return 'Rejected Tyre'
+        else: return 'Not Rejected Tyre'        
+TBM_parameter_dataset['Rejection_Imbalance_Only'] =TBM_parameter_dataset.apply(Imbalance_only, axis=1)
+
+
+
+
+
 TBM_parameter_dataset_1sttest = TBM_parameter_dataset.loc[TBM_parameter_dataset['timeperiod'].isin(['Test 1','Control 1']),:]
 TBM_parameter_dataset_2ndtest = TBM_parameter_dataset.loc[TBM_parameter_dataset['timeperiod'].isin([ 'Test 2','Control 2']),:]
 
@@ -48,20 +64,30 @@ Variables = ['Belt1_length_deviation', 'Belt2_length_deviation',
 option = st.selectbox(
      'Please Select the Variable',Variables)
 
+metric_option = st.selectbox('Select the Metric',['RFPP Only', 'Imbalance only','Imbalance & RFPP'])
+
+if metric_option=='RFPP Only':
+    var1='Rejection_RFPP_Only'
+elif metric_option=='Imbalance only':
+    var1='Rejection_Imbalance_Only'
+elif metric_option=='Imbalance & RFPP':
+    var1='Rejection_RFPP_Imbalance'
+
+
 
 
 ##########Charts#########################
 var = option
-fig = px.violin(TBM_parameter_dataset_1sttest, y=var, x="timeperiod",color='Rejection_RFPP_Imbalance' ,box=True)
+fig = px.violin(TBM_parameter_dataset_1sttest, y=var, x="timeperiod",color=var1 ,box=True)
 fig.update_layout(title_text= str(var) +  " VS Rejection (Test-24Apr to 1May,Control-17Apr to 23Apr(7days))")
 st.plotly_chart(fig,use_container_width=True)
 
-fig = px.violin(TBM_parameter_dataset_2ndtest, y=var, x="timeperiod",color='Rejection_RFPP_Imbalance' ,box=True)
+fig = px.violin(TBM_parameter_dataset_2ndtest, y=var, x="timeperiod",color=var1 ,box=True)
 fig.update_layout(title_text= str(var) + " VS Rejection (Test-30Mar to 1Apr,Control-25Mar to 29Mar(5days))")
 st.plotly_chart(fig,use_container_width=True)
 
-st.write(TBM_parameter_dataset_1sttest.groupby(['timeperiod','Rejection_RFPP_Imbalance'])['BARCODE'].count())
-st.write(TBM_parameter_dataset_2ndtest.groupby(['timeperiod','Rejection_RFPP_Imbalance'])['BARCODE'].count())
+st.write(TBM_parameter_dataset_1sttest.groupby(['timeperiod',var1])['BARCODE'].count())
+st.write(TBM_parameter_dataset_2ndtest.groupby(['timeperiod',var1])['BARCODE'].count())
 
 
 
