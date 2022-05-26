@@ -57,7 +57,7 @@ Variables = ['Belt1_length_deviation', 'Belt2_length_deviation',
        'PR_CYCLE_TIME_1PAP', 'PR_CYCLE_TIME_PAAP', 'PR_CYCLE_TIME_STITCH_PA',
        'ISDS_AMOUNT_SPLICES_BP1', 'ISDS_AMOUNT_SPLICES_BP2',
        'PA_ANGLE_MEASURED', 'PA_WIDTH_MEASURED', 'PAPR_CYCLE_MAT_AT_FRONT',
-       'PAPR_CYCLE_TOTAL', 'TDPR_CYCLE_MAT_AT_FRONT', 'TDPR_CYCLE_TOTAL']
+       'PAPR_CYCLE_TOTAL', 'TDPR_CYCLE_MAT_AT_FRONT', 'TDPR_CYCLE_TOTAL','GtWeight']
 
 
 
@@ -79,11 +79,11 @@ elif metric_option=='Imbalance & RFPP':
 ##########Charts#########################
 var = option
 fig = px.violin(TBM_parameter_dataset_1sttest, y=var, x="timeperiod",color=var1 ,box=True)
-fig.update_layout(title_text= str(var) +  " VS Rejection (Test-24Apr to 1May,Control-17Apr to 23Apr(7days))")
+fig.update_layout(title_text= str(var) + " VS Rejection (Test-30Mar to 3Apr,Control-25Mar to 29Mar(5days))")
 st.plotly_chart(fig,use_container_width=True)
 
 fig = px.violin(TBM_parameter_dataset_2ndtest, y=var, x="timeperiod",color=var1 ,box=True)
-fig.update_layout(title_text= str(var) + " VS Rejection (Test-30Mar to 1Apr,Control-25Mar to 29Mar(5days))")
+fig.update_layout(title_text= str(var) +  " VS Rejection (Test-24Apr to 1May,Control-17Apr to 23Apr(7days))")
 st.plotly_chart(fig,use_container_width=True)
 
 st.write(TBM_parameter_dataset_1sttest.groupby(['timeperiod',var1])['BARCODE'].count())
